@@ -69,6 +69,30 @@ public class TicketDAO {
         }
     }
 
+// Ajout de la nouvelle méthode getNbTicket afin de compter combien de tickets sont enregistrés pour un même véhicule
+
+    public int getNbTicket(String vehicleRegNumber) {
+    Connection con = null;
+    int countticket = 0;
+    try {
+        con = dataBaseConfig.getConnection();
+        PreparedStatement ps = con.prepareStatement(DBConstants.GET_NB_TICKET);
+        ps.setString(1, vehicleRegNumber);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            countticket = rs.getInt(1);
+        }
+        dataBaseConfig.closeResultSet(rs);
+        dataBaseConfig.closePreparedStatement(ps);
+    } catch (Exception ex) {
+        logger.error("Error getting number of tickets", ex);
+    } finally {
+        dataBaseConfig.closeConnection(con);
+        return countticket;
+    }
+}
+
+
     public boolean updateTicket(Ticket ticket) {
         Connection con = null;
         try {
